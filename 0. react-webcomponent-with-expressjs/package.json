@@ -96,7 +96,6 @@
     "dev:standalone": "webpack build --config webpack/standalone.config.js",
     "dev": "concurrently -p name -c \"yellow,magenta,green,blue,gray\" -n \"webpack-server,nodemon-server,webpack-client,webpack-standalone\" \"yarn dev:server\" \"yarn dev:server:nodemon\" \"yarn dev:client\" \"yarn dev:standalone\" ",
     "build:standalone": "NODE_ENV=production webpack --config ./webpack/standalone.config.js",
-    "build": "concurrently 'yarn build:client' 'yarn build:server'"
   },
   "eslintConfig": {
     "extends": [
