@@ -79,9 +79,9 @@
   },
   "scripts": {
     "dev:standalone": "webpack serve --config ./webpack/standalone.config.js",
-    "build:standalone": "webpack build --config ./webpack/standalone.config.js",
-	"dev:client": "webpack serve --config ./webpack/client.config.js",
-    "build:client": "webpack build --config ./webpack/client.config.js"
+    "build:standalone": "NODE_ENV=production webpack build --config ./webpack/standalone.config.js",
+    "dev:client": "webpack serve --config ./webpack/client.config.js",
+    "build:client": "NODE_ENV=production webpack build --config ./webpack/client.config.js"
   },
   "eslintConfig": {
     "extends": [
