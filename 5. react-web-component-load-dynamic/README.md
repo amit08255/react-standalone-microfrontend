@@ -16,9 +16,14 @@ npm run build:standalone
 
 ```tsx
 <RemoteComponent
-        url="http://localhost:80/standalone.js"
-        elementName="standalone-component"
-        props={{}}
+    url="http://localhost:80/standalone.js"
+    elementName="standalone-component"
+    props={{}}
+    events={{
+        click: (event) => {
+            console.log("Clicked the standalone component");
+        },
+    }}
 />
 ```
 
@@ -30,7 +35,14 @@ npm run build:standalone
 import * as React from "react";
 import toWebComponent from "./toWebComponent";
 
-const Component = () => (<div>Standalone Component</div>);
+const Component = ({ onEvent }:any) => {
+    const handleClick = (e:any) => {
+        e.stopPropagation();
+        onEvent("click", { message: "Clicked the standalone component" });
+    }
+
+    return (<div onClick={handleClick}>Standalone Component</div>);
+}
 
 const StandaloneComponent = toWebComponent(Component, "standalone-component");
 
