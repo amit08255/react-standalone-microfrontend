@@ -1,2 +1,3 @@
-# react-standalone-microfrontend
-React standalone component with web-components
+# React Standalone Microfrontend
+
+This repository provides a set of example projects allowing to create and integrate microfrontend in React.
