@@ -2,6 +2,14 @@
 
 This project is a simple example of calling custom function created inside the `Web Component`.
 
+## Building the Standalone Component JS File
+
+Run below command to build the standalone component. The built component is stored in `dist` directory
+
+```sh
+npm run build:standalone
+```
+
 ## Adding Web Component URL to App
 
 Open `index.html`. Add hosted component URL in `script` tag like below:
