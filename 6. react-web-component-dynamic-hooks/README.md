@@ -1,6 +1,6 @@
 # React Web Component Load Dynamic
 
-This project is a simple example of loading `Web Component` dynamically at runtime in `React` application.
+This project is a simple example of loading `Web Component` dynamically at runtime in `React` application. It also demonstrate how to update and share props from state in `Web Component`.
 
 ## Building the Standalone Component JS File
 
