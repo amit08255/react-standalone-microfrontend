@@ -1,10 +1,23 @@
 import * as React from "react";
-import * as ReactDom from "react-dom";
+import * as ReactDOM from "react-dom";
 
-function toWebComponent(ChildComponent: React.FC<any>, elementName: string) {
+type Options = {
+  ChildComponent: React.FC<any>,
+  elementName: string,
+  attributesToMonitor:string[],
+};
+
+function toWebComponent({ ChildComponent, attributesToMonitor, elementName }:Options) {
   class StandaloneComponent extends HTMLElement {
     mountPoint!:HTMLDivElement;
-    rootId = `${Math.random().toString(36).substring(7)}-${elementName}`;
+
+    static get observedAttributes() {
+      return attributesToMonitor;
+    }
+
+    onEvent = (event:string, detail:any) => {
+      this.dispatchEvent(new CustomEvent(event, { detail }));
+    };
 
     convertAttributesToMap = () => {
       const argumentsMap:any = {};
@@ -14,45 +27,25 @@ function toWebComponent(ChildComponent: React.FC<any>, elementName: string) {
         argumentsMap[name] = value;
       }
 
-        return argumentsMap;
+      return argumentsMap;
     };
 
-    onAttributeChange = () => {
-      if (this.shadowRoot) {
-        this.shadowRoot?.getElementById(this.rootId)?.dispatchEvent(new CustomEvent("onAttributeChange", {
-          detail: this.convertAttributesToMap(),
-        }));
-      }
+    createCollapsed() {
+      return React.createElement(ChildComponent, { ...this.convertAttributesToMap(), onEvent: this.onEvent });
     }
 
-    onEvent = (event:string, detail:any) => {
-        this.dispatchEvent(new CustomEvent(event, { detail }));
-    };
-
-    observeAttributes = () => {
-      const onAttributeChange = this.onAttributeChange.bind(this);
-      const observer = new MutationObserver(function(mutations) {
-        mutations.forEach(function(mutation) {
-          if (mutation.type === "attributes") {
-            onAttributeChange();
-          }
-        });
-      });
-
-      observer.observe(this, {
-        attributes: true //configure it to listen to attribute changes
-      });
-    };
-
     connectedCallback() {
-      const mountPointObj = document.createElement("div");
-      mountPointObj.setAttribute("id", this.rootId);
-      this.attachShadow({ mode: "open" }).appendChild(mountPointObj);
-      this.mountPoint = mountPointObj;
+      this.mountPoint = document.createElement('div');
+      const shadowRoot = this.attachShadow({ mode: 'open' });
+      shadowRoot.appendChild(this.mountPoint);
 
-      this.observeAttributes();
+      ReactDOM.render(this.createCollapsed(), this.mountPoint);
+    }
 
-      ReactDom.render(<ChildComponent {...this.convertAttributesToMap()} root={mountPointObj} onEvent={this.onEvent} />, mountPointObj);
+    attributeChangedCallback(name:string, oldValue:any, newValue:any) {
+      if (this.mountPoint) {
+        ReactDOM.render(this.createCollapsed(), this.mountPoint);
+      }
     }
   }
 
